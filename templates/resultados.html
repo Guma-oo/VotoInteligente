@@ -1,0 +1,33 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VotoInteligente | Resultados</title><link rel="stylesheet" href="/static/style.css"></head><body>
+<header class="topbar"><div class="brand">VotoInteligente</div><nav><a href="/">Recolectar</a><a href="/votar">Simulación</a><a href="/revision">Revisión</a><a class="active" href="/resultados">Resultados</a></nav></header>
+<main class="layout"><h1>Conteo de votos simulados</h1><div id="results">Calculando...</div></main>
+<script>
+const parties={{parties|tojson}};
+async function load(){
+ const r=await fetch('/api/resultados');const d=await r.json();const target=document.getElementById('results');target.replaceChildren();
+ const heading=document.createElement('p');heading.textContent=`Cédulas registradas: ${d.cedulas}`;target.append(heading);
+ d.columnas.forEach(col=>{
+  const panel=document.createElement('section');panel.className='panel';panel.style.margin='14px 0';
+  const title=document.createElement('h2');title.textContent=col.titulo;panel.append(title);
+  const summary=document.createElement('p');summary.textContent=`Válidos: ${col.votos_validos} · Blancos: ${col.blanco} · Nulos: ${col.nulo} · Por revisar: ${col.pendiente}`;panel.append(summary);
+  const t=document.createElement('table');t.className='data-table';
+  const h=document.createElement('thead');h.innerHTML='<tr><th>Organización</th><th>Votos</th><th>Porcentaje de válidos</th><th>Distribución</th></tr>';t.append(h);
+  const b=document.createElement('tbody');
+  col.partidos.forEach((v,i)=>{
+   const tr=document.createElement('tr');const pc=col.votos_validos?100*v/col.votos_validos:0;
+   const td1=document.createElement('td');td1.textContent=parties[i];const td2=document.createElement('td');td2.textContent=v;
+   const td3=document.createElement('td');td3.textContent=pc.toFixed(1)+'%';
+   const td4=document.createElement('td');const bar=document.createElement('div');bar.className='bar';bar.style.width=Math.max(1,pc)+'%';td4.append(bar);
+   tr.append(td1,td2,td3,td4);b.append(tr);
+  });t.append(b);panel.append(t);
+  const max=Math.max(...col.partidos);
+  const winner=document.createElement('p');winner.className='note';
+  winner.textContent=!col.votos_validos?'Todavía no hay votos válidos.':
+     col.pendiente?'Resultado provisional: quedan marcas por revisar.':
+     col.partidos.filter(v=>v===max).length>1?'Empate en el primer puesto.':
+     `Ganador de la práctica: ${parties[col.partidos.indexOf(max)]} (${max} votos).`;
+  panel.append(winner);target.append(panel);
+ });
+}
+load().catch(()=>document.getElementById('results').textContent='No se pudieron obtener resultados.');
+</script></body></html>

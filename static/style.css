@@ -1,0 +1,95 @@
+:root {
+  --fondo: #f5f0e6;
+  --panel: #fffdf8;
+  --texto: #23302f;
+  --barra: #0e5a5a;
+  --acento: #d99a2b;
+  --borde: #d8cfbd;
+  --ok: #2f7a3d;
+  --error: #a8321f;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+}
+* {box-sizing: border-box;}
+body {margin: 0;}
+a {color: var(--barra); text-decoration: none;}
+a:hover {color: var(--texto); background: var(--acento); text-decoration: underline;}
+.topbar {background: var(--barra); color: var(--panel); display: flex; gap: 18px; align-items: center; justify-content: space-between; padding: 14px 3vw; flex-wrap: wrap;}
+.brand {font-size: 23px; font-weight: 700; white-space: nowrap;}
+nav {display: flex; flex-wrap: wrap; gap: 8px;}
+nav a {color: var(--panel); padding: 9px 12px; border-radius: 4px; font-size: 14px;}
+nav a.active, nav a:hover {color: var(--texto); background: var(--acento); text-decoration: none;}
+.layout {max-width: 1570px; margin: 0 auto; padding: 24px 2vw 45px;}
+h1 {margin: 2px 0 16px; font-size: 28px;}
+h2 {font-size: 19px; margin: 0 0 12px;}
+.lead {max-width: 1000px; line-height: 1.5;}
+.workspace {display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 18px; align-items: start;}
+.panel {background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; padding: 17px; min-width: 0;}
+.panel-top {display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;}
+.flag {display: inline-block; font-size: 12px; color: var(--error); border: 1px solid var(--borde); border-radius: 4px; padding: 6px 8px; font-weight: 700;}
+.note, .small {line-height: 1.55; font-size: 13px;}
+.small {font-size: 12px;}
+.ballot-scroll {overflow: auto; background: var(--fondo); border: 1px solid var(--borde); border-radius: 4px;}
+.ballot-wrap {position: relative; width: 100%; aspect-ratio: 1132 / 626; min-width: 690px;}
+.ballot-wrap img, .ballot-wrap canvas {display: block; width: 100%; height: 100%; position: absolute; inset: 0;}
+.ballot-wrap canvas {cursor: crosshair; touch-action: manipulation;}
+label {display: block; margin-top: 13px; font-size: 13px; font-weight: 600;}
+select, input {width: 100%; margin-top: 5px; padding: 10px 11px; border: 1px solid var(--borde); border-radius: 4px; font-size: 14px; background: var(--panel); color: var(--texto);}
+.draw-box {margin: 12px auto; width: 250px; height: 250px; display: grid; place-items: center; background: var(--fondo); border: 1px solid var(--borde); border-radius: 4px;}
+#myCanvas {width: 240px; height: 240px; background: var(--panel); cursor: crosshair; touch-action: none; border: 1px solid var(--borde);}
+.buttons {display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 13px 0;}
+button {border: 1px solid var(--borde); border-radius: 4px; padding: 11px 13px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600;}
+button:disabled {opacity: .45; cursor: wait;}
+.primary {background: var(--barra); color: var(--panel); width: 100%; margin-top: 14px;}
+.primary:hover, .save-button:hover, .secondary:hover {background: var(--acento); color: var(--texto);}
+.secondary {background: var(--fondo); color: var(--texto);}
+.link {font-size: 13px;}
+.separator {border-top: 1px solid var(--borde); margin-top: 14px;}
+.message {margin-top: 12px; border-left: 3px solid var(--barra); background: var(--fondo); color: var(--texto); padding: 10px 12px; font-size: 13px; min-height: 38px; line-height: 1.45;}
+.message.error {border-color: var(--error); color: var(--error);}
+.message.ok {border-color: var(--ok); color: var(--ok);}
+.message:empty {display: none;}
+.statistics {margin-top: 18px;}
+.counters {display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px;}
+.counter {border: 1px solid var(--borde); border-radius: 4px; padding: 12px;}
+.counter strong {display: block; font-size: 25px; margin-top: 5px;}
+.progress {height: 7px; border-radius: 4px; background: var(--fondo); overflow: hidden; margin-top: 8px;}
+.progress span {height: 100%; display: block; background: var(--barra);}
+footer {margin-top: 20px; font-size: 12px;}
+.data-table {width: 100%; border-collapse: collapse; font-size: 14px;}
+.data-table th, .data-table td {padding: 10px; border-bottom: 1px solid var(--borde); text-align: left; vertical-align: middle;}
+.data-table th {background: var(--fondo);}
+.list-item {border: 1px solid var(--borde); border-radius: 6px; padding: 14px; margin-bottom: 12px;}
+.vote-imgs {display: flex; gap: 8px; flex-wrap: wrap;}
+.vote-imgs img {width: 105px; height: 105px; border: 1px solid var(--borde);}
+.status-pending, .error-text {color: var(--error);}
+.status-valid {color: var(--ok);}
+.caption {font-size: 12px;}
+.bar {height: 15px; background: var(--barra); border-radius: 4px; min-width: 1px;}
+.simple-layout {max-width: 620px;}
+.simple-layout .buttons {justify-content: center;}
+.save-button {background: var(--barra); color: var(--panel);}
+.simple-layout #counters p {padding: 8px 0; border-bottom: 1px solid var(--borde); margin: 0;}
+.prediction-panel {border-top: 1px solid var(--borde); padding-top: 12px;}
+.prediction-panel h2 {font-size: 16px;}
+.probability-row {display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 10px; margin: 10px 0; font-size: 12px;}
+.probability-track {grid-column: 1 / -1; height: 8px; background: var(--fondo); border: 1px solid var(--borde); border-radius: 4px; overflow: hidden;}
+.probability-track span {height: 100%; display: block; background: var(--barra);}
+.review-probabilities {max-width: 440px; margin-bottom: 16px;}
+#prediction-warning {font-size: 12px; line-height: 1.5;}
+#prediction-warning:empty {display: none;}
+:focus-visible {outline: 2px solid var(--acento); outline-offset: 2px;}
+@media (max-width: 1100px) {
+  .workspace {grid-template-columns: 1fr;}
+  .editor {max-width: 650px;}
+  .layout {padding: 18px 14px;}
+}
+@media (max-width: 450px) {
+  h1 {font-size: 24px;}
+  .topbar {padding: 14px;}
+  nav {gap: 3px;}
+  nav a {padding: 8px;}
+  .data-table {font-size: 12px;}
+  .data-table th, .data-table td {padding: 6px;}
+}

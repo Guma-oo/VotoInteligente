@@ -1,0 +1,14 @@
+__pycache__/
+.venv/
+*.pyc
+.ipynb_checkpoints/
+X.npy
+y.npy
+data/muestras.csv
+data/cedulas.json
+data/dibujos_voto/
+dataset/*/*.png
+models/*.keras
+!models/modelo_voto.keras
+modelos_temporales/
+resultados_entrenamiento/

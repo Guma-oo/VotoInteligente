@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VotoInteligente | Recolectar dibujos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">VotoInteligente</div>
+  <nav><a class="active" href="/">Dibujos</a><a href="/votar">Simulación</a><a href="/revision">Revisión</a><a href="/resultados">Resultados</a></nav>
+</header>
+<main class="layout simple-layout">
+  <h1>Recolectar dibujos</h1>
+  <section class="panel">
+    <label for="numero">Categoría del dibujo</label>
+    <select id="numero">{% for slug, name in categories.items() %}<option value="{{ slug }}">{{ name }}</option>{% endfor %}</select>
+    <div class="draw-box"><canvas id="myCanvas" width="200" height="200" aria-label="Dibuja una marca en el recuadro"></canvas></div>
+    <div class="buttons"><button id="borrar" class="secondary" type="button">Borrar</button><button id="guardar" class="save-button" type="button">Guardar dibujo</button></div>
+    <div id="mensaje" class="message" role="status" aria-live="polite"></div>
+  </section>
+  <section class="panel statistics">
+    <h2>Dibujos guardados</h2>
+    <div id="counters">Cargando cantidades...</div>
+    
+    
+  </section>
+  
+</main>
+<script>window.CATEGORIAS = {{ categories | tojson }};</script>
+<script src="{{ url_for('static', filename='recolectar.js') }}"></script>
+</body>
+</html>

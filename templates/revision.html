@@ -1,0 +1,66 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VotoInteligente | Revisión</title><link rel="stylesheet" href="/static/style.css"></head><body>
+<header class="topbar"><div class="brand">VotoInteligente</div><nav><a href="/">Recolectar</a><a href="/votar">Simulación</a><a class="active" href="/revision">Revisión</a><a href="/resultados">Resultados</a></nav></header>
+<main class="layout"><h1>Revisar marcas</h1><div id="pending" class="panel">Consultando cédulas...</div></main>
+<script>
+const contests={{ contests|tojson }}, parties={{ parties|tojson }}, categories={{ categories|tojson }};
+function showProbabilities(parent, probabilities) {
+ if (!probabilities || !probabilities.length) {
+  const empty=document.createElement('p');empty.className='small';
+  empty.textContent='Sin probabilidades guardadas.';parent.append(empty);return;
+ }
+ const list=document.createElement('div');list.className='review-probabilities';
+ [...probabilities].sort((a,b)=>b.probabilidad-a.probabilidad).forEach(p=>{
+  const row=document.createElement('div');row.className='probability-row';
+  const name=document.createElement('span');name.textContent=p.nombre;
+  const value=document.createElement('span');value.textContent=String(p.probabilidad);
+  const track=document.createElement('div');track.className='probability-track';
+  const bar=document.createElement('span');bar.style.width=(100*p.probabilidad)+'%';
+  track.append(bar);row.append(name,value,track);list.append(row);
+ });
+ parent.append(list);
+}
+async function showPending(){
+ const r=await fetch('/api/votos');const d=await r.json();const div=document.getElementById('pending');div.replaceChildren();
+ let total=0;
+ for(const ballot of d.cedulas){
+   ballot.columnas.forEach((r,col)=>{
+     if(r.estado!=='pendiente')return;total++;
+     const item=document.createElement('section');item.className='list-item';
+     const title=document.createElement('h2');title.textContent=`Cédula ${ballot.id.slice(0,8)} · ${contests[col]}`;item.append(title);
+     const details=document.createElement('p');details.textContent=`Predicción: ${categories[r.clase] || (r.clase==='marcas_multiples' ? 'Varias marcas' : 'Sin predicción')} · Confianza: ${r.confianza===null?'sin dato':String(r.confianza)}`;item.append(details);
+     if(r.predicciones && r.predicciones.length){
+       r.predicciones.forEach(p=>{
+         const label=document.createElement('p');
+         label.textContent=`${parties[p.partido]}: ${p.nombre} (${p.confianza})`;
+         item.append(label);showProbabilities(item,p.probabilidades);
+       });
+     }else showProbabilities(item,r.probabilidades);
+     const images=document.createElement('div');images.className='vote-imgs';
+     ballot.marcados.filter(m=>m.columna===col).forEach(mark=>{
+       const box=document.createElement('div');
+       const img=document.createElement('img');img.src=`/dibujo-voto/${ballot.id}/${col}/${mark.partido}`;img.alt='Dibujo marcado';
+       const caption=document.createElement('div');caption.className='caption';caption.textContent=parties[mark.partido];
+       box.append(img,caption);images.append(box);
+     });
+     item.append(images);
+     const text=document.createElement('label');text.textContent='Decisión del revisor';item.append(text);
+     const decision=document.createElement('select');
+     [['valido','Voto válido para...'],['nulo','Voto nulo'],['blanco','Voto blanco']].forEach(([v,t])=>decision.add(new Option(t,v)));
+     item.append(decision);
+     const who=document.createElement('select');parties.forEach((p,i)=>who.add(new Option(p,i)));
+     if(Number.isInteger(r.partido_marcado))who.value=r.partido_marcado;
+     item.append(who);
+     const btn=document.createElement('button');btn.className='primary';btn.textContent='Guardar decisión';
+     decision.onchange=()=>who.disabled=decision.value!=='valido';
+     btn.onclick=async()=>{
+       if(!confirm('¿Guardar esta decisión?'))return;
+       const res=await fetch('/api/revisar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cedula:ballot.id,columna:col,decision:decision.value,partido:+who.value})});
+       if(res.ok)showPending();else alert((await res.json()).error);
+     };
+     item.append(btn);div.append(item);
+   });
+ }
+ if(!total)div.textContent='No hay marcas por revisar.';
+}
+showPending().catch(()=>document.getElementById('pending').textContent='No se pudo cargar el registro.');
+</script></body></html>
